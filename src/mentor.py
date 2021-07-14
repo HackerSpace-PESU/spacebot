@@ -22,10 +22,13 @@ MENTOR_NAMES = set()
 
 def readDataFrame():
     global MENTOR_DF
-    # mentor_df_link = "https://raw.githubusercontent.com/ArvindAROO/Choco-private/master/data/mentors.csv?token=AH5RA36D6H6YS6WTPLU3FTDA6ZSWM"
-    # response = requests.get(mentor_df_link)
-    # mentor_df_content = StringIO(response.content.decode())
-    MENTOR_DF = pd.read_csv("data/mentors.csv")
+    try:
+        mentor_df_link = "https://raw.githubusercontent.com/HackerSpace-PESU/spacebot/main/data/mentors.csv"
+        response = requests.get(mentor_df_link)
+        mentor_df_content = StringIO(response.content.decode())
+        MENTOR_DF = pd.read_csv(mentor_df_content, sep=',')
+    except:
+        MENTOR_DF = pd.read_csv("data/mentors.csv")
 
 
 def initialiseMentorFilters():

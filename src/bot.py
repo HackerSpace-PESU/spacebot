@@ -110,6 +110,16 @@ async def on_command_error(ctx, error):
     await channel.send(content)
 
 
+@bot.command(aliases=["syncmentors", "mentorsync"])
+async def syncmentor(ctx):
+    bot_dev_role = discord.utils.get(ctx.guild.roles, id=ROLE_BOT_DEV)
+    if (bot_dev_role in ctx.author.roles):
+        await syncMentorInformation()
+        await ctx.send("Mentor information has been synced")
+    else:
+        await ctx.send(f"You are not authorised to run this command.")
+
+
 @bot.command(aliases=['c'])
 async def count(ctx, *roleName):
     roleName = ' '.join(roleName)
