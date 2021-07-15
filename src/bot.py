@@ -50,6 +50,7 @@ ROLE_CAMPUS_OUTSIDER = int(os.environ['ROLE_CAMPUS_OUTSIDER'])
 
 CONFESSIONS = dict()
 
+MENTOR_SYNC_TIME = 0
 
 async def remindUnassignedRoleMembers():
     unassigned_channel = bot.get_channel(CHANNEL_UNASSIGNED)
@@ -62,6 +63,8 @@ async def remindUnassignedRoleMembers():
 
 
 async def syncMentorInformation():
+    global MENTOR_SYNC_TIME
+    MENTOR_SYNC_TIME = int(time.time())
     readDataFrame()
     initialiseMentorFilters()
 
@@ -119,6 +122,9 @@ async def syncmentor(ctx):
     else:
         await ctx.send(f"You are not authorised to run this command.")
 
+@bot.command(aliases = ['lastsync'])
+async def syncTime(ctx):
+    await ctx.send(f"The mentor info was last synced <t:{MENTOR_SYNC_TIME}:R>")
 
 @bot.command(aliases=['c'])
 async def count(ctx, *roleName):
@@ -582,8 +588,7 @@ async def checkInstagramPost():
                 channel = bot.get_channel(CHANNEL_ANNOUNCEMENTS)
                 await channel.send("@everyone", embed=post_embed)
         except Exception as error:
-            print(
-                f"Error while fetching Instagram post from {username}: {error}")
+            print(f"Error while fetching Instagram post from {username}: {error}")
         await asyncio.sleep(1.5)
 
 

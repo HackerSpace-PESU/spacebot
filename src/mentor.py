@@ -7,14 +7,40 @@ MENTOR_DOMAIN_ACRONYMS = {
     "machine learning": ["ml", "machinelearning", "machine-learning"],
     "deep learning": ["dl", "deeplearning", "deep-learning"],
     "computer vision": ["cv", "computervision", "computer-vision"],
-    "natural language processing": ["nlp", "naturallanguageprocessing", "natural-language-processing"],
-    "app development": ["app dev", "appdev", "app-dev", "appdevelopment", "app-development"],
-    "web development": ["web dev", "webdev", "web-dev", "webdevelopment", "web-development"],
+    "natural language processing": [
+        "nlp",
+        "naturallanguageprocessing",
+        "natural-language-processing",
+    ],
+    "app development": [
+        "app dev",
+        "appdev",
+        "app-dev",
+        "appdevelopment",
+        "app-development",
+    ],
+    "web development": [
+        "web dev",
+        "webdev",
+        "web-dev",
+        "webdevelopment",
+        "web-development",
+    ],
     "linux": ["linux"],
-    "android kernel development": ["android-kernel-dev", "android-kernel-development", "android-kernel", "android kernel"],
-    "automation and webscraping": ["automation", "webscraping", "web-scraping", "automation-webscraping", ],
+    "android kernel development": [
+        "android-kernel-dev",
+        "android-kernel-development",
+        "android-kernel",
+        "android kernel",
+    ],
+    "automation and webscraping": [
+        "automation",
+        "webscraping",
+        "web-scraping",
+        "automation-webscraping",
+    ],
     "robotics": ["robotics", "robots"],
-    "distributed systems":["distributed-systems", "distributedsystems"],
+    "distributed systems": ["distributed-systems", "distributedsystems"],
 }
 MENTOR_CAMPUS = set()
 MENTOR_NAMES = set()
@@ -26,7 +52,7 @@ def readDataFrame():
         mentor_df_link = "https://raw.githubusercontent.com/HackerSpace-PESU/spacebot/main/data/mentors.csv"
         response = requests.get(mentor_df_link)
         mentor_df_content = StringIO(response.content.decode())
-        MENTOR_DF = pd.read_csv(mentor_df_content, sep=',')
+        MENTOR_DF = pd.read_csv(mentor_df_content, sep=",")
     except:
         MENTOR_DF = pd.read_csv("data/mentors.csv")
 
@@ -41,11 +67,11 @@ def initialiseMentorFilters():
         domain = row["DOMAIN"].lower()
         name = row["NAME"]
         campus = row["CAMPUS"].lower()
-        domains = set([c.lower().strip() for c in domain.split(',')])
+        domains = set([c.lower().strip() for c in domain.split(",")])
         for domain_name in domains:
             found = False
             for existing_domain in MENTOR_DOMAIN_ACRONYMS:
-                if domain_name == existing_domain or domain_name in MENTOR_DOMAIN_ACRONYMS[existing_domain]:
+                if (domain_name == existing_domain or domain_name in MENTOR_DOMAIN_ACRONYMS[existing_domain]):
                     found = True
             if not found:
                 MENTOR_DOMAIN_ACRONYMS[domain_name] = list()
@@ -99,7 +125,7 @@ def getMentorResultsByDomain(search_domain):
     search_domain = replaceAcronymWithKeyword(search_domain)
     for row in MENTOR_DF.iterrows():
         row = dict(row[1])
-        domains = [c.lower().strip() for c in row["DOMAIN"].split(',')]
+        domains = [c.lower().strip() for c in row["DOMAIN"].split(",")]
         if search_domain in domains:
             result.append(row)
     return result
@@ -113,12 +139,12 @@ def getMentorResultsByFilters(query_data):
         for filter in query_data:
             query, query_type = list(filter.items())[0]
             query_search_field_value = row[query_type].lower()
-            if query_type == 'NAME' and query in query_search_field_value:
+            if query_type == "NAME" and query in query_search_field_value:
                 result.append(row)
                 return result
             if query_type == "DOMAIN":
                 query = replaceAcronymWithKeyword(query)
-                domains = [c.lower().strip() for c in row["DOMAIN"].split(',')]
+                domains = [c.lower().strip() for c in row["DOMAIN"].split(",")]
                 query_search_field_value = domains
             if query not in query_search_field_value:
                 flag = False
