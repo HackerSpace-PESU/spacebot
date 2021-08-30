@@ -52,6 +52,8 @@ CONFESSIONS = dict()
 
 MENTOR_SYNC_TIME = 0
 
+FLAG = os.environ.get('FLAG')
+
 async def remindUnassignedRoleMembers():
     unassigned_channel = bot.get_channel(CHANNEL_UNASSIGNED)
     await unassigned_channel.purge(limit=1)
@@ -652,5 +654,21 @@ async def checkingDualRoles():
             if yeartaken and campustaken:
                 await member.remove_roles(unassign)
 
+@bot.command(aliases = ['flag'])
+async def ctf(ctx):
+    # Face Unlock is popular and this repo looks good:
+    # https://github.com/DevMashru/android_external_faceunlock
+    try:
+        if ctx.message.content.split(' ')[1] == FLAG:
+            await bot.get_channel(ctx.message.channel.id).send('Congratulations, you have entered the correct flag! You can claim your price at the hackerspace stall')
+            await bot.get_channel(CHANNEL_BOT_TEST).send('{} found the flag'.format(ctx.message.author))
+        else:
+            await bot.get_channel(ctx.message.channel.id).send('The flag you have entered is incorrect.')
+    except IndexError:
+        await bot.get_channel(ctx.message.channel.id).send('Please send the flag along with the message.')
+    except Exception as e:
+        e = str(e) + '\n' + str(ctx.message.author)
+        await bot.get_channel(CHANNEL_BOT_TEST).send(e)
+        await bot.get_channel(ctx.message.channel.id).send('Please contact us at the Hackerspace stall.')
 
 bot.run(BOT_TOKEN)
